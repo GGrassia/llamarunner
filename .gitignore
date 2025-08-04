@@ -1,0 +1,24 @@
+### Go ###
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+
+go.work
+
+config.toml
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+
+# Optional build outputs
+/bin/
+/build/
+*.log
+*.tmp
