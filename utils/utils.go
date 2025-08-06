@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	DEFAULT_CONFIG_DIR = "/usr/local/llama-presets"
-	DEFAULT_LLAMA_DIR  = "/usr/local/llama.cpp"
+	DEFAULT_CONFIG_DIR = "/usr/local/share/llama-presets"
+	DEFAULT_LLAMA_DIR  = "/usr/local/share/llama.cpp"
 )
 
 func FindLlamaCppDir() string {
@@ -17,7 +17,7 @@ func FindLlamaCppDir() string {
 	llamaDir := DEFAULT_LLAMA_DIR
 
 	// Check if llama.cpp is in standard location
-	if FileExists(filepath.Join(llamaDir, "llama-cli")) {
+	if FileExists(filepath.Join(llamaDir, "llama-server")) {
 		return llamaDir
 	}
 
