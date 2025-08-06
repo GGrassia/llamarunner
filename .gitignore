@@ -11,6 +11,9 @@
 go.work
 
 config.toml
+build.sh
+Makefile
+test-install.sh
 
 # Editor/IDE
 .idea/
