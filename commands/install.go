@@ -3,6 +3,7 @@ package commands
 
 import (
 	"fmt"
+	"github/llamarunner/utils"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,10 +20,9 @@ func InstallLlamaCpp() {
 	}
 
 	// Default installation directory
-	defaultDir := "/usr/local/llama.cpp"
-
+	defaultDir := utils.FindLlamaCppDir()
 	// Ask user for installation path
-	fmt.Print("Enter installation directory [default: /usr/local/llama.cpp]: ")
+	fmt.Print("Enter installation directory [default: /usr/local/share/llama.cpp]: ")
 	var input string
 	fmt.Scanln(&input)
 
