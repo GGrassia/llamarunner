@@ -10,12 +10,10 @@ import (
 
 func RunWithPreset() {
 	if len(os.Args) < 3 {
-		fmt.Println("Usage: llamarunner run <preset>")
-		return
+		presetName := os.Args[1]
+		runWithPresetName(presetName)
 	}
 
-	presetName := os.Args[2]
-	runWithPresetName(presetName)
 }
 
 func runWithPresetName(presetName string) {
