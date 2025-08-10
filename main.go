@@ -18,7 +18,11 @@ func main() {
 	case "install":
 		commands.InstallLlamaCpp()
 	case "run":
-		commands.RunWithPreset()
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: llamarunner run <preset-name>")
+			return
+		}
+		commands.RunWithPreset(os.Args[2])
 	case "init":
 		commands.InitPreset()
 	case "set":
@@ -43,6 +47,10 @@ func main() {
 		commands.ShowHelp()
 	default:
 		// If it's just a preset name, run it
-		commands.RunWithPreset()
+		if len(os.Args) < 2 {
+			fmt.Println("Usage: llamarunner run <preset-name>")
+			return
+		}
+		commands.RunWithPreset(os.Args[2])
 	}
 }

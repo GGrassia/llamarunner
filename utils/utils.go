@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pelletier/go-toml"
 )
 
 const (
@@ -65,27 +67,80 @@ func FindConfigDir() string {
 	return configDir
 }
 
-func LoadPresetConfig(configPath string) map[string]string {
-	config := make(map[string]string)
+func LoadConfig() (string, string, error) {
+	// Find the config directory
+	configDir := FindConfigDir()
 
-	// Simple config parser
+	// Construct the full path to config.toml
+	configPath := filepath.Join(configDir, "config.toml")
+
+	// Check if the file exists
+	if !FileExists(configPath) {
+		return "", "", fmt.Errorf("config.toml not found: %s", configPath)
+	}
+
+	// Read and parse the TOML file
 	data, err := os.ReadFile(configPath)
 	if err != nil {
-		return config
+		return "", "", err
 	}
 
-	lines := strings.Split(string(data), "\n")
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line != "" && !strings.HasPrefix(line, "#") {
-			parts := strings.SplitN(line, "=", 2)
-			if len(parts) == 2 {
-				config[parts[0]] = strings.TrimSpace(parts[1])
-			}
-		}
+	// Parse TOML
+	tomlData, err := toml.LoadBytes(data)
+	if err != nil {
+		return "", "", err
 	}
 
-	return config
+	// Extract host and port values with defaults
+	host := tomlData.Get("host").(string)
+	port := tomlData.Get("port").(string)
+
+	return host, port, nil
+}
+
+func LoadPresetConfig(presetName string) (string, error) {
+	// Find the config directory
+	configDir := FindConfigDir()
+
+	// Construct the full path to the preset config file
+	configPath := filepath.Join(configDir, presetName+".cfg")
+
+	// Check if the file exists
+	if !FileExists(configPath) {
+		return "", fmt.Errorf("preset config file not found: %s", configPath)
+	}
+
+	// Read the content of the cfg file
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return "", err
+	}
+
+	// Parse host and port from config.toml
+	host, port, err := LoadConfig()
+	if err != nil {
+		return "", fmt.Errorf("failed to load config: %v", err)
+	}
+
+	// Get the llama.cpp directory
+	llamaDir := FindLlamaCppDir()
+	binaryPath := filepath.Join(llamaDir, "llama-server")
+
+	// Read preset content and build enhanced command
+	presetContent := strings.TrimSpace(string(data))
+
+	// Build the enhanced command string
+	// Format: ./bin/build/llama-server --host <host> --port <port> [preset arguments]
+	var builder strings.Builder
+	builder.WriteString(binaryPath)
+	builder.WriteString(" --host ")
+	builder.WriteString(host)
+	builder.WriteString(" --port ")
+	builder.WriteString(port)
+	builder.WriteString(" ")
+	builder.WriteString(presetContent)
+
+	return builder.String(), nil
 }
 
 func FileExists(path string) bool {

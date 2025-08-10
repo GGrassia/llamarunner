@@ -18,7 +18,7 @@ type Settings struct {
 
 const (
 	SETTINGS_FILE      = "/usr/local/llama-presets/settings.toml"
-	USER_SETTINGS_FILE = "/home/yourusername/.llama-presets/settings.toml"
+	USER_SETTINGS_FILE = "$HOME/.llama-presets/settings.toml"
 )
 
 func LoadSettings() (*Settings, error) {

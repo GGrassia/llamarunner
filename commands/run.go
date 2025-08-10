@@ -2,43 +2,38 @@ package commands
 
 import (
 	"fmt"
-	"github/llamarunner/utils"
 	"os"
 	"os/exec"
-	"path/filepath"
+	"strings"
+
+	"github/llamarunner/utils"
 )
 
-func RunWithPreset() {
-	if len(os.Args) < 3 {
-		presetName := os.Args[1]
-		runWithPresetName(presetName)
-	}
-
-}
-
-func runWithPresetName(presetName string) {
-	// Find llama.cpp binary and config directory
-	llamaDir := utils.FindLlamaCppDir()
-	configDir := utils.FindConfigDir()
-
-	// Check if preset config exists
-	configPath := filepath.Join(configDir, presetName+".cfg")
-	if !utils.FileExists(configPath) {
-		fmt.Printf("Error: Preset config not found: %s\n", configPath)
+func RunWithPreset(presetName string) {
+	// Load the enhanced preset configuration
+	preset, err := utils.LoadPresetConfig(presetName)
+	if err != nil {
+		fmt.Printf("Error loading preset config: %v\n", err)
 		return
 	}
 
-	// Load config
-	config := utils.LoadPresetConfig(configPath)
+	// The preset now contains the complete command with binary path, host, port and arguments
+	// We need to split it into binary path and arguments
+	commandLine := strings.TrimSpace(preset)
+	parts := strings.Fields(commandLine)
+	if len(parts) < 1 {
+		fmt.Println("Error: Empty command line in preset config")
+		return
+	}
 
-	// Build command
-	cmd := exec.Command(
-		filepath.Join(llamaDir, "llama-cli"),
-		"-m", config["model"],
-		"-t", config["threads"],
-		"-n", config["n_predict"],
-		"--ctx_size", config["ctx_size"],
-	)
+	// Extract the binary path (first part of the command line)
+	binaryPath := parts[0]
+
+	// Extract arguments (everything after the binary path)
+	args := parts[1:]
+
+	// Build command with direct argument passing
+	cmd := exec.Command(binaryPath, args...)
 
 	// Connect stdin/stdout/stderr
 	cmd.Stdin = os.Stdin
@@ -46,8 +41,8 @@ func runWithPresetName(presetName string) {
 	cmd.Stderr = os.Stderr
 
 	// Run
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
-		fmt.Printf("Error running llama.cpp: %v\n", err)
+		fmt.Printf("Error running command: %v\n", err)
 	}
 }
