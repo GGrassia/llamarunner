@@ -10,6 +10,7 @@ func ShowHelp() {
 	fmt.Println("Usage:")
 	fmt.Println("  llamarunner install    Downloads and builds llama.cpp with optimizations")
 	fmt.Println("  llamarunner run <preset>    Load model with preset")
+	fmt.Println("  llamarunner list         List available presets")
 	fmt.Println("  llamarunner init             Initialize new preset")
 	fmt.Println("  llamarunner set d          Reset llamarunner to default configuration")
 	fmt.Println("  llamarunner set e          Edit configuration file")

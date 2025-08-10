@@ -25,6 +25,8 @@ func main() {
 		commands.RunWithPreset(os.Args[2])
 	case "init":
 		commands.InitPreset()
+	case "list":
+		commands.ListPresets()
 	case "set":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: llamarunner set <target>")
