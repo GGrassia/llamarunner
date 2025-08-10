@@ -6,7 +6,7 @@
 *.dylib
 *.test
 *.out
-
+*.cfg
 
 go.work
 
