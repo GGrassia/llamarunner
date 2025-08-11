@@ -195,20 +195,19 @@ func runCMakeBuild(forceCPU bool) error {
 	return nil
 }
 
-// copyBinaries copies the built binaries to the expected location
+// copyBinaries is disabled to keep binaries in build/bin directory
 func copyBinaries() error {
+	fmt.Println("Keeping binaries in build/bin directory (not copying to parent)")
+
 	// Source directory (build output)
 	srcDir := "build/bin"
-
-	// Destination directory (parent of llama.cpp)
-	destDir := ".."
 
 	// Check if source directory exists
 	if _, err := os.Stat(srcDir); os.IsNotExist(err) {
 		return fmt.Errorf("build output directory not found: %s", srcDir)
 	}
 
-	// Find all llama-* binaries
+	// Find all llama-* binaries to verify they exist
 	binaries, err := filepath.Glob(filepath.Join(srcDir, "llama-*"))
 	if err != nil {
 		return fmt.Errorf("error finding binaries: %v", err)
@@ -218,17 +217,10 @@ func copyBinaries() error {
 		return fmt.Errorf("no llama-* binaries found in %s", srcDir)
 	}
 
-	// Copy each binary
+	fmt.Printf("Binaries available in %s:\n", srcDir)
 	for _, binary := range binaries {
 		binaryName := filepath.Base(binary)
-		destPath := filepath.Join(destDir, binaryName)
-
-		fmt.Printf("Copying %s to %s\n", binaryName, destPath)
-
-		err = os.Rename(binary, destPath)
-		if err != nil {
-			return fmt.Errorf("error copying %s: %v", binaryName, err)
-		}
+		fmt.Printf("  - %s\n", binaryName)
 	}
 
 	return nil
