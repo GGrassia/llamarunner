@@ -1,4 +1,4 @@
-#!/bin/bash
+    #!/bin/bash
 
 # llamarunner installer script
 # This script downloads and installs the appropriate binary for your system
@@ -65,9 +65,18 @@ TMP_DIR=$(mktemp -d)
 cd "$TMP_DIR"
 
 # Download the binary
-curl -L -o "$BINARY_NAME" "$DOWNLOAD_URL"
+curl -L -f -o "$BINARY_NAME" "$DOWNLOAD_URL"
 if [ $? -ne 0 ]; then
-    echo "Error downloading binary. Please check your internet connection."
+    echo "Error downloading binary from $DOWNLOAD_URL"
+    echo "Please check your internet connection and ensure that releases are available."
+    rm -rf "$TMP_DIR"
+    exit 1
+fi
+
+# Verify the downloaded file is actually a binary (not an error page)
+if ! file "$BINARY_NAME" | grep -q "executable"; then
+    echo "Error: Downloaded file is not a valid executable."
+    echo "This might be because no releases are available yet for your platform."
     rm -rf "$TMP_DIR"
     exit 1
 fi
