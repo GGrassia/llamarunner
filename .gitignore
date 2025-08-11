@@ -14,7 +14,7 @@ config.toml
 build.sh
 Makefile
 test-install.sh
-llamarunner
+llamarunner*
 
 # Editor/IDE
 .idea/
