@@ -72,26 +72,21 @@ func (c *InstallCommand) Run(args []string) {
 		return
 	}
 
-	// Build llama.cpp
-	fmt.Println("Building llama.cpp...")
-	buildDir := filepath.Join(installDir, "llama.cpp")
-
-	// Change to build directory
-	err = os.Chdir(buildDir)
-	if err != nil {
-		fmt.Printf("Error changing directory: %v\n", err)
-		return
+	// Check if build flag is present
+	buildFlag := false
+	for _, arg := range args {
+		if arg == "-b" || arg == "--build" {
+			buildFlag = true
+			break
+		}
 	}
 
-	// Run make to build
-	buildCmd := exec.Command("make")
-	buildCmd.Stdout = os.Stdout
-	buildCmd.Stderr = os.Stderr
-
-	err = buildCmd.Run()
-	if err != nil {
-		fmt.Printf("Error building llama.cpp: %v\n", err)
-		return
+	// Build llama.cpp only if -b or --build flag is present
+	if buildFlag {
+		buildCmd := NewBuildCommand()
+		buildCmd.buildLlamaCpp(filepath.Join(installDir, "llama.cpp"))
+	} else {
+		fmt.Println("Skipping build. Use -b or --build flag to build llama.cpp after installation.")
 	}
 
 	// Save the installation path to settings

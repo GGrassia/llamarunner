@@ -26,6 +26,7 @@ func (c *HelpCommand) Run(args []string) {
 	fmt.Println()
 	fmt.Println("Usage:")
 	fmt.Println("  llamarunner install    Downloads and builds llama.cpp with optimizations")
+	fmt.Println("  llamarunner build [dir]      Build llama.cpp with CUDA detection")
 	fmt.Println("  llamarunner run <preset>    Load model with preset")
 	fmt.Println("  llamarunner list         List available presets")
 	fmt.Println("  llamarunner init             Initialize new preset")

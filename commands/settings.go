@@ -15,6 +15,7 @@ type Settings struct {
 	ConfigPath   string `toml:"config_path"`
 	Host         string `toml:"host"`
 	Port         string `toml:"port"`
+	ForceCPU     bool   `toml:"force_cpu"`
 }
 
 const (
@@ -100,6 +101,7 @@ func createDefaultSettings() (*Settings, error) {
 		ConfigPath:   filepath.Dir(getUserSettingsFile()),
 		Host:         "localhost",
 		Port:         "8080",
+		ForceCPU:     false,
 	}
 
 	// Create settings directory if needed
@@ -141,6 +143,7 @@ func SetDefaultSettings() {
 		ConfigPath:   filepath.Dir(getUserSettingsFile()),
 		Host:         "localhost",
 		Port:         "8080",
+		ForceCPU:     false,
 	}
 
 	err := SaveSettings(settings)
@@ -169,6 +172,7 @@ func EditSettingsFile() {
 	fmt.Printf("ConfigPath: %s\n", settings.ConfigPath)
 	fmt.Printf("Host: %s\n", settings.Host)
 	fmt.Printf("Port: %s\n", settings.Port)
+	fmt.Printf("ForceCPU: %t\n", settings.ForceCPU)
 
 	// You can add logic here to actually open nano or other editor
 	// For now, just show that it would edit the file

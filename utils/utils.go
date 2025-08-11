@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -145,6 +146,25 @@ func LoadPresetConfig(presetName string) (string, error) {
 	builder.WriteString(presetContent)
 
 	return builder.String(), nil
+}
+
+// HasCUDA checks if CUDA is available on the system
+func HasCUDA() (bool, error) {
+	// Check if nvcc is available in PATH
+	if !isCommandAvailable("nvcc") {
+		return false, nil
+	}
+
+	// Additional CUDA checks could be added here if needed
+	// For now, just checking for nvcc availability
+
+	return true, nil
+}
+
+// isCommandAvailable checks if a command is available in the system PATH
+func isCommandAvailable(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	return err == nil
 }
 
 func FileExists(path string) bool {
