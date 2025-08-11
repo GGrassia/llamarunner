@@ -109,3 +109,8 @@ func isCommandAvailable(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
 }
+
+// Register the install command automatically
+func init() {
+	RegisterCommand("install", NewInstallCommand())
+}

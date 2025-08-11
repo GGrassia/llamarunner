@@ -55,3 +55,8 @@ func (c *ListCommand) Run(args []string) {
 		fmt.Printf("\nTotal presets: %d\n", presetCount)
 	}
 }
+
+// Register the list command automatically
+func init() {
+	RegisterCommand("list", NewListCommand())
+}

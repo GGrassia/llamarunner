@@ -81,3 +81,8 @@ func (c *InitCommand) Run(args []string) {
 			presetName, configPath)
 	}
 }
+
+// Register the init command automatically
+func init() {
+	RegisterCommand("init", NewInitCommand())
+}

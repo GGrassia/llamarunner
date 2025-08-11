@@ -55,6 +55,11 @@ func (c *SetCommand) Run(args []string) {
 	}
 }
 
+// Register the set command automatically
+func init() {
+	RegisterCommand("set", NewSetCommand())
+}
+
 func LoadSettings() (*Settings, error) {
 	// Try user settings first
 	userSettingsFile := getUserSettingsFile()

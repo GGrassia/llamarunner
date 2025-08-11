@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// Initialize commands
+	// Initialize commands - now automatic via init functions
 	initializeCommands()
 
 	if len(os.Args) < 2 {
@@ -60,14 +60,9 @@ func main() {
 	cmd.Run(os.Args[2:])
 }
 
-// initializeCommands registers all available commands
+// initializeCommands now just ensures all commands are registered via their init functions
 func initializeCommands() {
-	// Register core commands
-	commands.RegisterCommand("install", commands.NewInstallCommand())
-	commands.RegisterCommand("build", commands.NewBuildCommand())
-	commands.RegisterCommand("run", commands.NewRunCommand())
-	commands.RegisterCommand("init", commands.NewInitCommand())
-	commands.RegisterCommand("list", commands.NewListCommand())
-	commands.RegisterCommand("set", commands.NewSetCommand())
-	commands.RegisterCommand("help", commands.NewHelpCommand())
+	// All commands are now automatically registered via their init() functions
+	// This function exists for compatibility but doesn't need to do anything
+	// The init() functions in each command file handle registration
 }

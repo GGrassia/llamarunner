@@ -241,3 +241,8 @@ func (c *BuildCommand) buildLlamaCpp(buildDir string) {
 		fmt.Printf("Error: %v\n", err)
 	}
 }
+
+// Register the build command automatically
+func init() {
+	RegisterCommand("build", NewBuildCommand())
+}

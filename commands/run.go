@@ -68,3 +68,8 @@ func (c *RunCommand) Run(args []string) {
 		fmt.Printf("Error running command: %v\n", err)
 	}
 }
+
+// Register the run command automatically
+func init() {
+	RegisterCommand("run", NewRunCommand())
+}

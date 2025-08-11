@@ -22,26 +22,19 @@ func NewHelpCommand() *HelpCommand {
 
 // Run executes the help command
 func (c *HelpCommand) Run(args []string) {
-	fmt.Println("llamarunner - CLI manager for llama.cpp")
-	fmt.Println()
-	fmt.Println("Usage:")
-	fmt.Println("  llamarunner install    Downloads and builds llama.cpp with optimizations")
-	fmt.Println("  llamarunner build [dir]      Build llama.cpp with CUDA detection")
-	fmt.Println("  llamarunner run <preset>    Load model with preset")
-	fmt.Println("  llamarunner list         List available presets")
-	fmt.Println("  llamarunner init             Initialize new preset")
-	fmt.Println("  llamarunner set d          Reset llamarunner to default configuration")
-	fmt.Println("  llamarunner set e          Edit configuration file")
-	fmt.Println("  llamarunner help              Show this help")
-	fmt.Println("  llamarunner -h                Show this help")
-	fmt.Println()
-	fmt.Println("Examples:")
-	fmt.Println("  llamarunner qwen3-flash")
-	fmt.Println("  llamarunner run llama3-8b")
-	fmt.Println("  llamarunner init")
-	fmt.Println("  llamarunner set e")
-	fmt.Println()
-	fmt.Println("Preset files can be located in:")
-	fmt.Println("  /usr/local/llama-presets/")
-	fmt.Println("  ~/.llama-presets/")
+	fmt.Println("Available commands:")
+
+	// Get all registered commands
+	commands := GetAllCommands()
+
+	for name, cmd := range commands {
+		fmt.Printf("  %-12s %s\n", name, cmd.Description())
+	}
+
+	fmt.Println("\nUse 'llamarunner <command> --help' for more information about a command.")
+}
+
+// Register the help command automatically
+func init() {
+	RegisterCommand("help", NewHelpCommand())
 }

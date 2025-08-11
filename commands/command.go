@@ -28,3 +28,8 @@ func GetCommand(name string) (Command, bool) {
 	cmd, exists := commandRegistry[name]
 	return cmd, exists
 }
+
+// GetAllCommands returns all registered commands
+func GetAllCommands() map[string]Command {
+	return commandRegistry
+}
