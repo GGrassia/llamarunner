@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"github/llamarunner/utils"
 	"os"
 	"path/filepath"
 
@@ -17,13 +18,46 @@ type Settings struct {
 }
 
 const (
-	SETTINGS_FILE      = "/usr/local/llama-presets/settings.toml"
-	USER_SETTINGS_FILE = "$HOME/.llama-presets/settings.toml"
+	SETTINGS_FILE = "$HOME/.llama-presets/settings.toml"
 )
+
+// SetCommand implements the Command interface for settings management
+type SetCommand struct {
+	*BaseCommand
+}
+
+// NewSetCommand creates a new set command
+func NewSetCommand() *SetCommand {
+	return &SetCommand{
+		BaseCommand: NewBaseCommand(
+			"set",
+			"Manage configuration settings",
+			"llamarunner set <target>\nTargets:\n  d    Set default settings\n  e    Edit settings file",
+		),
+	}
+}
+
+// Run executes the set command
+func (c *SetCommand) Run(args []string) {
+	if len(args) < 1 {
+		fmt.Println(c.Usage())
+		return
+	}
+	target := args[0]
+	switch target {
+	case "d":
+		SetDefaultSettings()
+	case "e":
+		EditSettingsFile()
+	default:
+		fmt.Printf("Unknown target: %s\n", target)
+	}
+}
 
 func LoadSettings() (*Settings, error) {
 	// Try user settings first
-	settings, err := loadSettingsFromFile(USER_SETTINGS_FILE)
+	userSettingsFile := getUserSettingsFile()
+	settings, err := loadSettingsFromFile(userSettingsFile)
 	if err == nil && settings != nil {
 		return settings, nil
 	}
@@ -36,6 +70,12 @@ func LoadSettings() (*Settings, error) {
 
 	// Create default settings
 	return createDefaultSettings()
+}
+
+// getUserSettingsFile returns the path to the user's settings file
+func getUserSettingsFile() string {
+	homeDir := os.Getenv("HOME")
+	return filepath.Join(homeDir, ".llama-presets", "settings.toml")
 }
 
 func loadSettingsFromFile(path string) (*Settings, error) {
@@ -56,15 +96,15 @@ func loadSettingsFromFile(path string) (*Settings, error) {
 func createDefaultSettings() (*Settings, error) {
 	settings := &Settings{
 		LlamaCppPath: "/usr/local/llama.cpp",
-		ModelPath:    "/usr/local/llama-presets/models",
-		ConfigPath:   "/usr/local/llama-presets",
+		ModelPath:    getUserSettingsFile(),
+		ConfigPath:   filepath.Dir(getUserSettingsFile()),
 		Host:         "localhost",
 		Port:         "8080",
 	}
 
 	// Create settings directory if needed
-	dir := filepath.Dir(SETTINGS_FILE)
-	os.MkdirAll(dir, 0755)
+	userDir := filepath.Dir(getUserSettingsFile())
+	os.MkdirAll(userDir, 0755)
 
 	// Save default settings
 	err := SaveSettings(settings)
@@ -82,7 +122,11 @@ func SaveSettings(settings *Settings) error {
 		return err
 	}
 
-	err = os.WriteFile(USER_SETTINGS_FILE, data, 0644)
+	// Use utils function to get the config directory
+	configDir := utils.GetDefaultConfigDir()
+	userFile := filepath.Join(configDir, "settings.toml")
+
+	err = os.WriteFile(userFile, data, 0644)
 	if err != nil {
 		return err
 	}
@@ -93,8 +137,8 @@ func SaveSettings(settings *Settings) error {
 func SetDefaultSettings() {
 	settings := &Settings{
 		LlamaCppPath: "/usr/local/llama.cpp",
-		ModelPath:    "/usr/local/llama-presets/models",
-		ConfigPath:   "/usr/local/llama-presets",
+		ModelPath:    filepath.Join(filepath.Dir(getUserSettingsFile()), "models"),
+		ConfigPath:   filepath.Dir(getUserSettingsFile()),
 		Host:         "localhost",
 		Port:         "8080",
 	}
@@ -114,7 +158,11 @@ func EditSettingsFile() {
 		return
 	}
 
-	fmt.Printf("Editing settings file: %s\n", USER_SETTINGS_FILE)
+	// Get the actual expanded path
+	actualPath := utils.GetDefaultConfigDir()
+	settingsFile := filepath.Join(actualPath, "settings.toml")
+
+	fmt.Printf("Editing settings file: %s\n", settingsFile)
 	fmt.Println("Current settings:")
 	fmt.Printf("LlamaCppPath: %s\n", settings.LlamaCppPath)
 	fmt.Printf("ModelPath: %s\n", settings.ModelPath)
@@ -125,5 +173,5 @@ func EditSettingsFile() {
 	// You can add logic here to actually open nano or other editor
 	// For now, just show that it would edit the file
 	fmt.Println("Note: This would normally open your editor to modify the file.")
-	fmt.Println("You can manually edit: " + USER_SETTINGS_FILE)
+	fmt.Println("You can manually edit: " + settingsFile)
 }

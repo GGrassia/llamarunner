@@ -9,7 +9,29 @@ import (
 	"github/llamarunner/utils"
 )
 
-func RunWithPreset(presetName string) {
+// RunCommand implements the Command interface for running presets
+type RunCommand struct {
+	*BaseCommand
+}
+
+// NewRunCommand creates a new run command
+func NewRunCommand() *RunCommand {
+	return &RunCommand{
+		BaseCommand: NewBaseCommand(
+			"run",
+			"Load model with preset",
+			"llamarunner run <preset-name>",
+		),
+	}
+}
+
+// Run executes the run command
+func (c *RunCommand) Run(args []string) {
+	if len(args) < 1 {
+		fmt.Println(c.Usage())
+		return
+	}
+	presetName := args[0]
 	// Load the enhanced preset configuration
 	preset, err := utils.LoadPresetConfig(presetName)
 	if err != nil {
@@ -30,10 +52,10 @@ func RunWithPreset(presetName string) {
 	binaryPath := parts[0]
 
 	// Extract arguments (everything after the binary path)
-	args := parts[1:]
+	runArgs := parts[1:]
 
 	// Build command with direct argument passing
-	cmd := exec.Command(binaryPath, args...)
+	cmd := exec.Command(binaryPath, runArgs...)
 
 	// Connect stdin/stdout/stderr
 	cmd.Stdin = os.Stdin

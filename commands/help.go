@@ -4,7 +4,24 @@ import (
 	"fmt"
 )
 
-func ShowHelp() {
+// HelpCommand implements the Command interface for showing help
+type HelpCommand struct {
+	*BaseCommand
+}
+
+// NewHelpCommand creates a new help command
+func NewHelpCommand() *HelpCommand {
+	return &HelpCommand{
+		BaseCommand: NewBaseCommand(
+			"help",
+			"Show this help message",
+			"llamarunner help",
+		),
+	}
+}
+
+// Run executes the help command
+func (c *HelpCommand) Run(args []string) {
 	fmt.Println("llamarunner - CLI manager for llama.cpp")
 	fmt.Println()
 	fmt.Println("Usage:")

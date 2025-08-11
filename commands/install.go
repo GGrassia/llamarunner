@@ -10,7 +10,24 @@ import (
 	"strings"
 )
 
-func InstallLlamaCpp() {
+// InstallCommand implements the Command interface for installing llama.cpp
+type InstallCommand struct {
+	*BaseCommand
+}
+
+// NewInstallCommand creates a new install command
+func NewInstallCommand() *InstallCommand {
+	return &InstallCommand{
+		BaseCommand: NewBaseCommand(
+			"install",
+			"Downloads and builds llama.cpp with optimizations",
+			"llamarunner install",
+		),
+	}
+}
+
+// Run executes the install command
+func (c *InstallCommand) Run(args []string) {
 	fmt.Println("Installing llama.cpp...")
 
 	// Check if git is available

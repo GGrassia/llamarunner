@@ -8,7 +8,24 @@ import (
 	"github/llamarunner/utils"
 )
 
-func ListPresets() {
+// ListCommand implements the Command interface for listing presets
+type ListCommand struct {
+	*BaseCommand
+}
+
+// NewListCommand creates a new list command
+func NewListCommand() *ListCommand {
+	return &ListCommand{
+		BaseCommand: NewBaseCommand(
+			"list",
+			"List available presets",
+			"llamarunner list",
+		),
+	}
+}
+
+// Run executes the list command
+func (c *ListCommand) Run(args []string) {
 	// Find the config directory using the existing utility function
 	configDir := utils.FindConfigDir()
 

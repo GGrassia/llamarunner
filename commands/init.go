@@ -7,7 +7,24 @@ import (
 	"path/filepath"
 )
 
-func InitPreset() {
+// InitCommand implements the Command interface for initializing presets
+type InitCommand struct {
+	*BaseCommand
+}
+
+// NewInitCommand creates a new init command
+func NewInitCommand() *InitCommand {
+	return &InitCommand{
+		BaseCommand: NewBaseCommand(
+			"init",
+			"Initialize new preset",
+			"llamarunner init",
+		),
+	}
+}
+
+// Run executes the init command
+func (c *InitCommand) Run(args []string) {
 	fmt.Println("Initializing new preset...")
 
 	// Get preset name

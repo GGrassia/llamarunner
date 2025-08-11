@@ -2,57 +2,51 @@ package main
 
 import (
 	"fmt"
-	"github/llamarunner/commands"
 	"os"
+
+	"github/llamarunner/commands"
 )
 
 func main() {
+	// Initialize commands
+	initializeCommands()
+
 	if len(os.Args) < 2 {
-		commands.ShowHelp()
+		cmd, exists := commands.GetCommand("help")
+		if !exists {
+			fmt.Println("Error: help command not found")
+			return
+		}
+		cmd.Run(nil)
 		return
 	}
 
-	command := os.Args[1]
+	commandName := os.Args[1]
+	cmd, exists := commands.GetCommand(commandName)
 
-	switch command {
-	case "install":
-		commands.InstallLlamaCpp()
-	case "run":
-		if len(os.Args) < 3 {
-			fmt.Println("Usage: llamarunner run <preset-name>")
-			return
+	if !exists {
+		// If it's just a preset name, run it with the run command
+		if len(os.Args) >= 2 {
+			runCmd, exists := commands.GetCommand("run")
+			if exists {
+				runCmd.Run([]string{os.Args[1]})
+				return
+			}
 		}
-		commands.RunWithPreset(os.Args[2])
-	case "init":
-		commands.InitPreset()
-	case "list":
-		commands.ListPresets()
-	case "set":
-		if len(os.Args) < 3 {
-			fmt.Println("Usage: llamarunner set <target>")
-			fmt.Println("Targets:")
-			fmt.Println("  d    Set default settings")
-			fmt.Println("  e    Edit settings file")
-			return
-		}
-		target := os.Args[2]
-		switch target {
-		case "d":
-			commands.SetDefaultSettings()
-		case "e":
-			commands.EditSettingsFile()
-		default:
-			fmt.Printf("Unknown target: %s\n", target)
-			return
-		}
-	case "help", "-h", "--help":
-		commands.ShowHelp()
-	default:
-		// If it's just a preset name, run it
-		if len(os.Args) < 2 {
-			fmt.Println("Usage: llamarunner run <preset-name>")
-			return
-		}
-		commands.RunWithPreset(os.Args[2])
+		fmt.Printf("Unknown command: %s\n", commandName)
+		return
 	}
+
+	cmd.Run(os.Args[2:])
+}
+
+// initializeCommands registers all available commands
+func initializeCommands() {
+	// Register core commands
+	commands.RegisterCommand("install", commands.NewInstallCommand())
+	commands.RegisterCommand("run", commands.NewRunCommand())
+	commands.RegisterCommand("init", commands.NewInitCommand())
+	commands.RegisterCommand("list", commands.NewListCommand())
+	commands.RegisterCommand("set", commands.NewSetCommand())
+	commands.RegisterCommand("help", commands.NewHelpCommand())
 }

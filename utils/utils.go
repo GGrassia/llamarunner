@@ -10,9 +10,13 @@ import (
 )
 
 const (
-	DEFAULT_CONFIG_DIR = "/usr/local/share/llama-presets"
-	DEFAULT_LLAMA_DIR  = "/usr/local/share/llama.cpp"
+	DEFAULT_LLAMA_DIR = "/usr/local/share/llama.cpp"
 )
+
+// GetDefaultConfigDir returns the default config directory path
+func GetDefaultConfigDir() string {
+	return filepath.Join(os.Getenv("HOME"), ".llama-presets")
+}
 
 func FindLlamaCppDir() string {
 	// Try to find llama.cpp installation
@@ -39,12 +43,12 @@ func FindLlamaCppDir() string {
 
 func FindConfigDir() string {
 	// Try user config directory first
-	userConfigDir := filepath.Join(os.Getenv("HOME"), ".llama-presets")
+	userConfigDir := GetDefaultConfigDir()
 	if _, err := os.Stat(userConfigDir); err == nil {
 		return userConfigDir
 	}
 
-	configDir := DEFAULT_CONFIG_DIR
+	configDir := "/usr/local/share/llama-presets"
 
 	// If directory exists, use it
 	if _, err := os.Stat(configDir); err == nil {
