@@ -102,7 +102,7 @@ func loadSettingsFromFile(path string) (*Settings, error) {
 
 func createDefaultSettings() (*Settings, error) {
 	settings := &Settings{
-		LlamaCppPath: "/usr/local/llama.cpp",
+		LlamaCppPath: "$HOME/llama.cpp",
 		ModelPath:    getUserSettingsFile(),
 		ConfigPath:   filepath.Dir(getUserSettingsFile()),
 		Host:         "localhost",
@@ -145,7 +145,7 @@ func SaveSettings(settings *Settings) error {
 
 func SetDefaultSettings() {
 	settings := &Settings{
-		LlamaCppPath: "/usr/local/llama.cpp",
+		LlamaCppPath: "$HOME/llama.cpp",
 		ModelPath:    filepath.Join(filepath.Dir(getUserSettingsFile()), "models"),
 		ConfigPath:   filepath.Dir(getUserSettingsFile()),
 		Host:         "localhost",

@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	DEFAULT_LLAMA_DIR = "/usr/local/share/llama.cpp"
+	DEFAULT_LLAMA_DIR = "~/llama.cpp"
 )
 
 // GetDefaultConfigDir returns the default config directory path

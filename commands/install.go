@@ -39,7 +39,7 @@ func (c *InstallCommand) Run(args []string) {
 	// Default installation directory
 	defaultDir := utils.FindLlamaCppDir()
 	// Ask user for installation path
-	fmt.Print("Enter installation directory [default: /usr/local/share/llama.cpp]: ")
+	fmt.Printf("Enter installation directory [default: %s]: ", defaultDir)
 	var input string
 	fmt.Scanln(&input)
 
@@ -102,6 +102,15 @@ func (c *InstallCommand) Run(args []string) {
 	} else {
 		fmt.Println("llama.cpp installed and configured successfully!")
 		fmt.Printf("Installation path: %s\n", installDir)
+	}
+	returnCmd := exec.Command("cd", "..")
+	returnCmd.Stderr = os.Stderr
+	returnCmd.Stdin = os.Stdin
+
+	retErr := returnCmd.Run()
+	if err != nil {
+		fmt.Printf("No idea how but we could not return to the parent folder -> %v", retErr)
+		return
 	}
 }
 
