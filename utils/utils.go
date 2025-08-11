@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	DEFAULT_LLAMA_DIR = "~/llama.cpp"
+	DEFAULT_LLAMA_DIR = "$HOME/llama.cpp"
 )
 
 // GetDefaultConfigDir returns the default config directory path
@@ -58,7 +58,7 @@ func FindConfigDir() string {
 		return userConfigDir
 	}
 
-	configDir := "/usr/local/share/llama-presets"
+	configDir := "$HOME/.llama-presets"
 
 	// If directory exists, use it
 	if _, err := os.Stat(configDir); err == nil {

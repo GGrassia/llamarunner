@@ -38,7 +38,7 @@ func (c *BuildCommand) Run(args []string) {
 			fmt.Println("Error: no installation directory specified and no default found in settings")
 			return
 		}
-		buildDir = filepath.Join(settings.LlamaCppPath, "llama.cpp")
+		buildDir = settings.LlamaCppPath
 	}
 
 	c.buildLlamaCpp(buildDir)
