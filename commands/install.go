@@ -37,15 +37,19 @@ func (c *InstallCommand) Run(args []string) {
 	}
 
 	// Default installation directory
-	defaultDir := utils.FindLlamaCppDir()
-	// Ask user for installation path
-	fmt.Printf("Enter installation directory [default: %s]: ", defaultDir)
+	var installDir string
 	var input string
-	fmt.Scanln(&input)
+	defaultDir := utils.FindLlamaCppDir()
+	// Logic is buggy, TODO fix user prompt for folder
+	if defaultDir != "" {
+		installDir = defaultDir
+	} else {
+		fmt.Printf("Enter installation directory [default: %s]: ", defaultDir)
+		fmt.Scanln(&input)
 
-	installDir := defaultDir
-	if input != "" {
-		installDir = input
+		if input != "" {
+			installDir = input
+		}
 	}
 
 	fmt.Printf("Installing to: %s\n", installDir)

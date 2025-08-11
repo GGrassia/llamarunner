@@ -14,51 +14,27 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
-const (
-	DEFAULT_LLAMA_DIR = "$HOME/llama.cpp"
-)
+var homeFolder string = os.Getenv("HOME")
 
 // GetDefaultConfigDir returns the default config directory path
 func GetDefaultConfigDir() string {
-	return filepath.Join(os.Getenv("HOME"), ".llama-presets")
+	return filepath.Join(homeFolder, ".llama-presets")
 }
 
 func FindLlamaCppDir() string {
 	// Try to find llama.cpp installation
-	llamaDir := DEFAULT_LLAMA_DIR
-
-	// Check if llama.cpp is in standard location
-	if FileExists(filepath.Join(llamaDir, "llama-server")) {
-		return llamaDir
-	}
-
-	// Check if llama.cpp is in build/bin directory
-	if FileExists(filepath.Join(llamaDir, "build", "bin", "llama-server")) {
-		return llamaDir
-	}
-
-	// If not found, ask user
-	fmt.Printf("llama.cpp not found in %s\n", llamaDir)
-	fmt.Print("Enter llama.cpp installation path (or press Enter for default): ")
-
-	var input string
-	fmt.Scanln(&input)
-
-	if input != "" {
-		return input
-	}
-
+	llamaDir := filepath.Join(homeFolder, "llama.cpp")
 	return llamaDir // fallback
 }
 
 func FindConfigDir() string {
-	// Try user config directory first
+	// Try user config directory first, TODO must implement read from settings
 	userConfigDir := GetDefaultConfigDir()
 	if _, err := os.Stat(userConfigDir); err == nil {
 		return userConfigDir
 	}
 
-	configDir := "$HOME/.llama-presets"
+	configDir := filepath.Join(homeFolder, "llama.cpp")
 
 	// If directory exists, use it
 	if _, err := os.Stat(configDir); err == nil {
