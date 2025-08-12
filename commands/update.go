@@ -53,7 +53,7 @@ func (c *UpdateCommand) Run(args []string) {
 	}
 
 	// Load current settings to get version
-	settings, err := LoadSettings()
+	settings, err := utils.LoadSettings()
 	if err != nil {
 		fmt.Printf("Error loading settings: %v\n", err)
 		return
@@ -87,7 +87,7 @@ func (c *UpdateCommand) Run(args []string) {
 
 	// Update version in settings
 	settings.Version = latestVersion
-	err = SaveSettings(settings)
+	err = utils.SaveSettings(settings)
 	if err != nil {
 		fmt.Printf("Warning: Could not update version in settings: %v\n", err)
 	} else {

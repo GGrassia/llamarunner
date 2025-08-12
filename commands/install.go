@@ -94,13 +94,13 @@ func (c *InstallCommand) Run(args []string) {
 	}
 
 	// Save the installation path to settings
-	settings, err := LoadSettings()
+	settings, err := utils.LoadSettings()
 	if err != nil {
-		settings = &Settings{}
+		settings = &utils.Settings{}
 	}
 
 	settings.LlamaCppPath = installDir
-	err = SaveSettings(settings)
+	err = utils.SaveSettings(settings)
 	if err != nil {
 		fmt.Printf("Error saving settings: %v\n", err)
 	} else {

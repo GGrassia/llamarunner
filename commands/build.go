@@ -33,7 +33,7 @@ func (c *BuildCommand) Run(args []string) {
 		buildDir = args[0]
 	} else {
 		// Default to llama.cpp directory from settings
-		settings, err := LoadSettings()
+		settings, err := utils.LoadSettings()
 		if err != nil || settings.LlamaCppPath == "" {
 			fmt.Println("Error: no installation directory specified and no default found in settings")
 			return
@@ -60,7 +60,7 @@ func BuildLlamaCpp(buildDir string) error {
 	}
 
 	// Load settings
-	settings, err := LoadSettings()
+	settings, err := utils.LoadSettings()
 	if err != nil {
 		return fmt.Errorf("error loading settings: %v", err)
 	}
@@ -96,7 +96,7 @@ func BuildLlamaCpp(buildDir string) error {
 				settings.ForceCPU = true
 
 				// Save updated settings
-				err = SaveSettings(settings)
+				err = utils.SaveSettings(settings)
 				if err != nil {
 					return fmt.Errorf("error saving settings: %v", err)
 				}
