@@ -61,13 +61,21 @@ detect_platform() {
 PLATFORM_ARCH=$(detect_platform)
 echo "Detected platform: $PLATFORM_ARCH"
 
+# Get latest release tag from GitHub
+echo "Fetching latest release information..."
+LATEST_RELEASE=$(curl -s https://api.github.com/repos/GGrassia/llamarunner/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+if [ -z "$LATEST_RELEASE" ]; then
+    echo "Error: Could not fetch latest release information"
+    echo "Falling back to hardcoded version..."
+    LATEST_RELEASE="v0.9"
+fi
+
+echo "Latest release: $LATEST_RELEASE"
+
 # Download appropriate binary
 BINARY_NAME="llamarunner-$PLATFORM_ARCH"
-# TODO: Update RELEASE_TAG when switching between prerelease and regular releases
-# For prereleases: use specific tag like "v0.9"
-# For regular releases: can use "latest" or specific version tag
-RELEASE_TAG="v0.9"
-DOWNLOAD_URL="https://github.com/GGrassia/llamarunner/releases/download/$RELEASE_TAG/$BINARY_NAME"
+DOWNLOAD_URL="https://github.com/GGrassia/llamarunner/releases/download/$LATEST_RELEASE/$BINARY_NAME"
 
 echo "Downloading llamarunner binary from: $DOWNLOAD_URL"
 
